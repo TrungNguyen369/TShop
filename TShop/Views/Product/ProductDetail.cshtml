@@ -1,0 +1,193 @@
+﻿@model (Product, List<Product>)
+@{
+    ViewData["Title"] = "ProductDetail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Product Detail Start -->
+<div class="product-detail">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="row align-items-center product-detail-top">
+                    <div class="col-md-5">
+                        <div class="product-slider-single">
+                            <img src="~/image/@Model.Item1.Image" alt="Product Image">
+                            <img src="~/image/@Model.Item1.ImageDetailOne" alt="Product Image">
+                            <img src="~/image/@Model.Item1.ImageDetailTwo" alt="Product Image">
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="product-content">
+                            <div class="title"><h2>@Model.Item1.NameProduct</h2></div>
+                            <div class="ratting">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </div>
+                            <div class="price">$@Model.Item1.Price <span>$25</span></div>
+                            <div class="details">
+                                <p>@Model.Item1.Description</p>
+                            </div>
+
+                            <div class="quantity">
+                                <h4>Quantity:</h4>
+                                <div class="qty">
+                                    <button class="btn-minus" type="button"><i class="fa fa-minus"></i></button>
+                                    <input id="quantityInput" type="text" value="1" name="quantity">
+                                    <button class="btn-plus" type="button"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+                            <div class="action">
+                                <a id="addToCartBtn"><i class="fa fa-cart-plus"></i></a>
+                                <a href="#"><i class="fa fa-heart"></i></a>
+                                <a href="#"><i class="fa fa-search"></i></a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row product-detail-bottom">
+                    <div class="col-lg-12">
+                        <ul class="nav nav-pills nav-justified">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="pill" href="#description">Description</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="pill" href="#specification">Specification</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="pill" href="#reviews">Reviews (1)</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div id="description" class="container tab-pane active">
+                                <br>
+                                <h4>Product description</h4>
+                                <p>
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In condimentum quam ac mi viverra dictum. In efficitur ipsum diam, at dignissim lorem tempor in. Vivamus tempor hendrerit finibus. Nulla tristique viverra nisl, sit amet bibendum ante suscipit non. Praesent in faucibus tellus, sed gravida lacus. Vivamus eu diam eros. Aliquam et sapien eget arcu rhoncus scelerisque. Suspendisse sit amet neque neque. Praesent suscipit et magna eu iaculis. Donec arcu libero, commodo ac est a, malesuada finibus dolor. Aenean in ex eu velit semper fermentum. In leo dui, aliquet sit amet eleifend sit amet, varius in turpis. Maecenas fermentum ut ligula at consectetur. Nullam et tortor leo.
+                                </p>
+                            </div>
+                            <div id="specification" class="container tab-pane fade">
+                                <br>
+                                <h4>Product specification</h4>
+                                <ul>
+                                    <li>Lorem ipsum dolor sit amet</li>
+                                    <li>Lorem ipsum dolor sit amet</li>
+                                    <li>Lorem ipsum dolor sit amet</li>
+                                    <li>Lorem ipsum dolor sit amet</li>
+                                    <li>Lorem ipsum dolor sit amet</li>
+                                </ul>
+                            </div>
+                            <div id="reviews" class="container tab-pane fade">
+                                <br>
+                                <div class="reviews-submitted">
+                                    <div class="reviewer">Phasellus Gravida - <span>01 Jan 2020</span></div>
+                                    <div class="ratting">
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                    </div>
+                                    <p>
+                                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.
+                                    </p>
+                                </div>
+                                <div class="reviews-submit">
+                                    <h4>Give your Review:</h4>
+                                    <div class="ratting">
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                    </div>
+                                    <div class="row form">
+                                        <div class="col-sm-6">
+                                            <input type="text" placeholder="Name">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input type="email" placeholder="Email">
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <textarea placeholder="Review"></textarea>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <button>Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container">
+                    <div class="section-header">
+                        <h3>Related Products</h3>
+                        <p>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec viverra at massa sit amet ultricies. Nullam consequat, mauris non interdum cursus
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row align-items-center product-slider product-slider-3">
+                    <!-- ProductItem -->
+                    @await Html.PartialAsync("ProductItem", Model.Item2);
+                    <!-- ProductItem -->
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <!-- Categogy -->
+                @await Component.InvokeAsync("Category")
+                <!-- Categogy -->
+                <!-- ImageFeatureProduct -->
+                @await Html.PartialAsync("ImageFeatureProduct")
+                <!-- ImageFeatureProduct -->
+                <!-- Brand -->
+                @await Component.InvokeAsync("Brand")
+                <!-- Brand -->
+                <!-- Tags Cloud -->
+                @await Html.PartialAsync("TagsCloud")
+                <!-- Tags Cloud -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Product Detail End -->
+
+@section Scripts 
+{
+    <script>
+        // Lấy đối tượng button "Add to Cart" và thêm sự kiện click
+        var addToCartBtn = document.getElementById('addToCartBtn');
+        addToCartBtn.addEventListener('click', function () {
+            // Lấy giá trị của trường input quantity
+            var quantity = document.getElementById('quantityInput').value;
+            var id = @Model.Item1.IdProduct;
+
+            console.log(id+" "+ quantity);
+
+            // Gửi dữ liệu lên server bằng Ajax
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '@Url.Action("AddCart", "Cart")', true);
+            xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+                    // Xử lý kết quả từ server (nếu cần)
+                    console.log('Data sent successfully!');
+
+                    // Chuyển hướng đến trang index sau khi thành công
+                    window.location.href = '@Url.Action("Index", "Cart")';
+                }
+            };
+            xhr.send(JSON.stringify({ id: id, quantity: quantity }));
+        });
+    </script>
+}

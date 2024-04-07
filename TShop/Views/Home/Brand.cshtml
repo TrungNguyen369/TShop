@@ -1,0 +1,18 @@
+﻿@model IEnumerable<TShop.Models.Brand>
+
+<div class="brand">
+    <div class="container">
+        <div class="section-header">
+            <h3>Our Brands</h3>
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec viverra at massa sit amet ultricies. Nullam consequat, mauris non interdum cursus
+            </p>
+        </div>
+        <div class="brand-slider">
+            @foreach (var item in Model)
+            {
+                <div class="brand-item"><img src="~/image/@item.ImageBrands" alt="@item.Name" style="height:80px"></div>
+            }
+        </div>
+    </div>
+</div>

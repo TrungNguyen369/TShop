@@ -1,0 +1,11 @@
+﻿@model IEnumerable<TShop.ViewModels.BrandVM>
+
+<div class="sidebar-widget brands">
+    <h2 class="title">Our Brands</h2>
+    <ul>
+        @foreach (var item in Model)
+        {
+            <li><a asp-action="Index" asp-controller="Product" asp-route-brandId="@item.Id">@item.Name </a><span>(@item.Quantity)</span></li>
+        }
+    </ul>
+</div>

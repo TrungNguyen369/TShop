@@ -1,0 +1,27 @@
+﻿@model (List<List<Product>>, List<Brand>)
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!-- Main Slider Start -->
+@await Html.PartialAsync("MainSlider")
+<!-- Main Slider End -->
+<!-- Feature Start-->
+@await Html.PartialAsync("Feature")
+<!-- Feature End-->
+<!-- Category Start-->
+@await Html.PartialAsync("Category")
+<!-- Category End-->
+<!-- Featured Product Start -->
+@await Html.PartialAsync("FeaturedProduct", Model.Item1[0])
+<!-- Featured Product End -->
+<!-- Newsletter Start -->
+@await Html.PartialAsync("Newsletter")
+<!-- Newsletter End -->
+<!-- Recent Product Start -->
+@await Html.PartialAsync("RecentProduct", Model.Item1[1])
+<!-- Recent Product End -->
+<!-- Brand Start -->
+@await Html.PartialAsync("Brand", Model.Item2)
+<!-- Brand End -->

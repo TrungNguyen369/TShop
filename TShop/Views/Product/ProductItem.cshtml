@@ -1,0 +1,30 @@
+﻿@model IEnumerable<TShop.Models.Product>
+
+@foreach (var item in Model)
+{
+    <div class="col-lg-4">
+        <div class="product-item" style="height:413px">
+            <div class="product-image">
+                <a asp-controller="Product" asp-action="ProductDetail" asp-route-id="@item.IdProduct">
+                    <img src="~/image/@item.Image" alt="Product Image @item.Image" style="height:255px">
+                </a>
+                <div class="product-action">
+                    <a asp-controller="Cart" asp-action="AddCart" asp-route-id="@item.IdProduct" ><i class="fa fa-cart-plus"></i></a>
+                    <a href="#"><i class="fa fa-heart"></i></a>
+                    <a href="#"><i class="fa fa-search"></i></a>
+                </div>
+            </div>
+            <div class="product-content">
+                <div class="title"><a href="#">@item.NameProduct</a></div>
+                <div class="ratting">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                </div>
+                <div class="price">$@item.Price</div>
+            </div>
+        </div>
+    </div>
+}

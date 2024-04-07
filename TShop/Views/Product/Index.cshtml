@@ -1,0 +1,59 @@
+﻿@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<Product>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Product List Start -->
+<div class="product-view">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="row">
+                    <!-- ProductItem -->
+                    @await Html.PartialAsync("ProductItem", Model);
+                    <!-- ProductItem -->
+                </div>
+                <div class="col-lg-12">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <!-- List Pager -->
+                            @Html.PagedListPager(Model,
+                                     page => Url.Action("Index", new { page }),
+                                     new PagedListRenderOptions
+                            {
+                                DisplayLinkToIndividualPages = true,
+                                DisplayPageCountAndCurrentLocation = false,
+                                MaximumPageNumbersToDisplay = 10,
+                                LiElementClasses = new string[] { "page-item" },
+                                PageClasses = new string[] { "page-link" },
+                            })
+                            <!-- List Pager -->
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <!-- Categogy -->
+                @await Component.InvokeAsync("Category")
+                <!-- Categogy -->
+
+                <!-- ImageFeatureProduct -->
+                @await Html.PartialAsync("ImageFeatureProduct")
+                <!-- ImageFeatureProduct -->
+
+                <!-- Brand -->
+                @await Component.InvokeAsync("Brand")
+                <!-- Brand -->
+
+                <!-- Tags Cloud -->
+                @await Html.PartialAsync("TagsCloud")
+                <!-- Tags Cloud -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Product List End -->
