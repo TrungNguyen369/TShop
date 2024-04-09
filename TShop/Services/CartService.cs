@@ -10,8 +10,8 @@ namespace TShop.Services
     {
         private readonly TshopContext _context;
 
-        public CartService(TshopContext context) 
-        { 
+        public CartService(TshopContext context)
+        {
             _context = context;
         }
         public List<CartItem> AddProductToCart(List<CartItem> cartItems, int idProduct, int quantity)
@@ -52,9 +52,41 @@ namespace TShop.Services
             throw new NotImplementedException();
         }
 
-        public List<CartItem> RevomeproductToCart()
+        public List<CartItem> ReduceQuantityProduct(List<CartItem> cartItems, int idProduct, int quantity)
         {
-            throw new NotImplementedException();
+            //find item exsist cart?
+            var item = cartItems.Find(x => x.Id == idProduct);
+
+            //check item reduce cart
+            if (item != null)
+            {
+                if (item.Quantity <= 1)
+                {
+                    item.Quantity = 0;
+                }
+                else
+                {
+                    //Reduce cart
+                    item.Quantity -= quantity;
+                }
+            }
+
+            return cartItems;
+        }
+
+        public List<CartItem> RevomeProductToCart(List<CartItem> cartItems, int idProduct)
+        {
+            //find item exsist cart?
+            var item = cartItems.Find(x => x.Id == idProduct);
+
+            //check item add cart
+            if (item != null)
+            {
+                //Revome cart
+                cartItems.Remove(item);
+            }
+
+            return cartItems;
         }
     }
 }

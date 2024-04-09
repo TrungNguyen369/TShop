@@ -6,6 +6,7 @@ namespace TShop.IServices
     {
         List<CartItem> GetCartItems();
         List<CartItem> AddProductToCart(List<CartItem> cartItems, int idProduct, int quantity);
-        List<CartItem> RevomeproductToCart();
+        List<CartItem> RevomeProductToCart(List<CartItem> cartItems, int idProduct);
+        List<CartItem> ReduceQuantityProduct(List<CartItem> cartItems, int idProduct, int quantity);
     }
 }

@@ -25,18 +25,18 @@
                             @foreach (var item in Model)
                             {
                                 <tr>
-                                    <td><a href="#"><img src="~/image/@item.image" alt="Image @item.image"></a></td>
-                                    <td><a href="#">@item.Name</a></td>
+                                    <td><a asp-action="ProductDetail" asp-controller="Product" asp-route-id="@item.Id"><img src="~/image/@item.image" alt="Image @item.image"></a></td>
+                                    <td><a data-product-id="@item.Id">@item.Name</a></td>
                                     <td id="Price">$@item.Price</td>
                                     <td>
                                         <div class="qty">
                                             <button class="btn-minus"><i class="fa fa-minus"></i></button>
                                             <input id="quantityInput" type="text" value="@item.Quantity">
-                                            <button class="btn-plus" asp-action="AddCart" asp-controller="Cart" asp-route-id="@item.Id" asp-route-quantity="@item.Quantity+1"><i class="fa fa-plus"></i></button>
+                                            <button class="btn-plus"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </td>
                                     <td id="TotalPrice">$@item.TotalPrice</td>
-                                    <td><button><i class="fa fa-trash"></i></button></td>
+                                    <td><button class="btn-remove"><i class="fa fa-trash"></i></button></td>
                                 </tr>
                             }
                         </tbody>
@@ -75,43 +75,72 @@
         document.addEventListener("DOMContentLoaded", function () {
             const minusButtons = document.querySelectorAll(".btn-minus");
             const plusButtons = document.querySelectorAll(".btn-plus");
+            const removeButtons = document.querySelectorAll(".btn-remove");
+
+            removeButtons.forEach(btn => {
+                btn.addEventListener("click", function () {
+                    updateBtnClick(btn);
+                });
+            });
 
             minusButtons.forEach(btn => {
                 btn.addEventListener("click", function () {
-                    var inputElement = document.getElementById('quantityInput');
-                    var quantity = parseInt(inputElement.value);
-                    console.log("quantity: update--" + quantity);
-                    updateTotalPrice(btn, quantity);
+                    updateBtnClick(btn);
                 });
             });
 
             plusButtons.forEach(btn => {
                 btn.addEventListener("click", function () {
-                    var inputElement = document.getElementById('quantityInput');
-                    var quantity = inputElement.value;
-                    console.log("quantity: update--" + quantity);
-                    updateTotalPrice(btn, quantity);
+                    updateBtnClick(btn);
                 });
             });
 
-            function updateTotalPrice(btn, quantity) {
-                var totalPriceTd = document.getElementById('TotalPrice');
-                var priceTd = document.getElementById('Price');
-                var grandTotal = document.getElementById('GrandTotal');
+            function updateBtnClick(btn) {
+                var productId;
+                document.querySelectorAll('a[data-product-id]').forEach(link => {
+                    productId = link.getAttribute('data-product-id');
+                });
+                console.log('Product id:', productId);
 
-                var priceValue = parseFloat(priceTd.innerText.replace("$", "")) // Lấy giá trị từ innerText và chuyển đổi sang số
-                console.log('Giá trị của Price:', priceValue);
+                // Check if btn has class .btn-plus
+                if (btn.classList.contains('btn-plus')) {
+                    console.log('Clicked the Add button');
 
-                const totalPrice = priceValue * quantity; // Tính toán tổng giá trị
-                console.log('totalPrice: ' + totalPrice);
+                    // Send Ajax request
+                    sendData('AddCart', productId)
 
-                totalPriceTd.innerText = '$' + totalPrice; // Gán giá trị mới vào phần tử "TotalPrice"
-                console.log('totalPriceTd.innerText: ' + totalPrice);
+                    // Check if btn has class .btn-minus
+                } else if (btn.classList.contains('btn-minus')) {
+                    console.log('Clicked the Minus button');
 
-                var priceGrandTotal = parseFloat(grandTotal.innerText.replace("$", ""))
-                console.log('Giá trị của priceGrandTotal:', priceGrandTotal);
-                grandTotal.innerText = '$' + priceGrandTotal + totalPrice;
-                console.log('grandTotal.innerText: ' + totalPrice);
+                    // Send Ajax request
+                    sendData('ReduceCart', productId)
+
+                    // Check if btn has class .btn-remove
+                } else if (btn.classList.contains('btn-remove')) {
+                    console.log('Clicked the Remove button');
+
+                    // Send Ajax request
+                    sendData('RemoveCart', productId)
+                }
+            }
+
+            function sendData(action, productId) {
+                // Send Ajax request for update
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', `/Cart/${action}`, true);
+                xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+
+                        // Process results from the server (if necessary)
+                        console.log('Data updated successfully!');
+
+                        // Redirect to index page after success
+                        window.location.href = '@Url.Action("Index", "Cart")';
+                    }
+                };
+                xhr.send(JSON.stringify({ Id: productId, Quantity: 1 }));
             }
         });
     </script>

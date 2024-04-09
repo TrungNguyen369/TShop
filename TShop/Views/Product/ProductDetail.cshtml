@@ -165,25 +165,26 @@
 @section Scripts 
 {
     <script>
-        // Lấy đối tượng button "Add to Cart" và thêm sự kiện click
+        // Get the "Add to Cart" button object and add a click event
         var addToCartBtn = document.getElementById('addToCartBtn');
         addToCartBtn.addEventListener('click', function () {
-            // Lấy giá trị của trường input quantity
+
+            // Get the value of the input quantity field
             var quantity = document.getElementById('quantityInput').value;
             var id = @Model.Item1.IdProduct;
 
             console.log(id+" "+ quantity);
 
-            // Gửi dữ liệu lên server bằng Ajax
+            // Send data to the server using Ajax
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '@Url.Action("AddCart", "Cart")', true);
             xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
-                    // Xử lý kết quả từ server (nếu cần)
+                    // Process results from the server (if necessary)
                     console.log('Data sent successfully!');
 
-                    // Chuyển hướng đến trang index sau khi thành công
+                    // Redirect to index page after success
                     window.location.href = '@Url.Action("Index", "Cart")';
                 }
             };

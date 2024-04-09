@@ -56,5 +56,39 @@ namespace TShop.Controllers
 
             return RedirectToAction("Index");
         }
+
+        [HttpPost]
+        public IActionResult ReduceCart([FromBody] CartPayLoad data)
+        {
+            var cartItems = Cart;
+
+            //get id and quantity from product post
+            var quantity = data.Quantity;
+            var id = data.Id;
+
+            //add cart item into cart 
+            cartItems = _cartService.ReduceQuantityProduct(cartItems, id, quantity);
+
+            //save cart
+            HttpContext.Session.Set(Constants.CART_KEY, cartItems);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult RemoveCart([FromBody] CartPayLoad data)
+        {
+            var cartItems = Cart;
+
+            var id = data.Id;
+
+            //add cart item into cart 
+            cartItems = _cartService.RevomeProductToCart(cartItems, id);
+
+            //save cart
+            HttpContext.Session.Set(Constants.CART_KEY, cartItems);
+
+            return RedirectToAction("Index");
+        }
     }
 }
