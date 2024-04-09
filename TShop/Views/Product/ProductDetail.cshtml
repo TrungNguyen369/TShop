@@ -42,7 +42,7 @@
                             </div>
                             <div class="action">
                                 <a id="addToCartBtn"><i class="fa fa-cart-plus"></i></a>
-                                <a href="#"><i class="fa fa-heart"></i></a>
+                                <a id="addToWishListBtn"><i class="fa fa-heart"></i></a>
                                 <a href="#"><i class="fa fa-search"></i></a>
                             </div>
 
@@ -186,6 +186,31 @@
 
                     // Redirect to index page after success
                     window.location.href = '@Url.Action("Index", "Cart")';
+                }
+            };
+            xhr.send(JSON.stringify({ id: id, quantity: quantity }));
+        });
+
+        var addToWishListBtn = document.getElementById('addToWishListBtn');
+        addToWishListBtn.addEventListener('click', function () {
+
+            // Get the value of the input quantity field
+            var quantity = document.getElementById('quantityInput').value;
+            var id = @Model.Item1.IdProduct;
+
+            console.log(id + " " + quantity);
+
+            // Send data to the server using Ajax
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '@Url.Action("AddWishList", "WishList")', true);
+            xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+                    // Process results from the server (if necessary)
+                    console.log('Data sent successfully!');
+
+                    // Redirect to index page after success
+                    window.location.href = '@Url.Action("Index", "WishList")';
                 }
             };
             xhr.send(JSON.stringify({ id: id, quantity: quantity }));

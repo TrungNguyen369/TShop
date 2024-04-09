@@ -21,6 +21,7 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IBrandService, BrandService>();
 builder.Services.AddTransient<ICartService, CartService>();
+builder.Services.AddTransient<IWishListService, WishListService>();
 
 //Configure session state
 builder.Services.AddDistributedMemoryCache();

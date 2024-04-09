@@ -11,7 +11,7 @@
                     </a>
                     <div class="product-action">
                         <a asp-controller="Cart" asp-action="AddCart" asp-route-id="@item.IdProduct"><i class="fa fa-cart-plus"></i></a>
-                        <a href="#"><i class="fa fa-heart"></i></a>
+                        <a asp-controller="WishList" asp-action="AddWishList" asp-route-id="@item.IdProduct"><i class="fa fa-heart"></i></a>
                         <a href="#"><i class="fa fa-search"></i></a>
                     </div>
                 </div>

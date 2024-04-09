@@ -1,10 +1,10 @@
-﻿@model IEnumerable<TShop.ViewModels.CartItem>
+﻿@model IEnumerable<TShop.ViewModels.WishItem>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!-- Cart Start -->
+<!-- Wishlist Start -->
 <div class="cart-page">
     <div class="container">
         <div class="row">
@@ -17,7 +17,7 @@
                                 <th>Name</th>
                                 <th>Price</th>
                                 <th>Quantity</th>
-                                <th>Total</th>
+                                <th>Add to Cart</th>
                                 <th>Remove</th>
                             </tr>
                         </thead>
@@ -25,9 +25,9 @@
                             @foreach (var item in Model)
                             {
                                 <tr>
-                                    <td><a asp-action="ProductDetail" asp-controller="Product" asp-route-id="@item.Id"><img src="~/image/@item.image" alt="Image @item.image"></a></td>
-                                    <td><a data-product-id="@item.Id">@item.Name</a></td>
-                                    <td id="Price">$@item.Price</td>
+                                    <td><a asp-controller="Product" asp-action="ProductDetail"><img src="~/image/@item.image" alt="Image"></a></td>
+                                    <td><a asp-controller="Product" asp-action="ProductDetail" data-product-id="@item.Id">@item.Name</a></td>
+                                    <td>$@item.Price</td>
                                     <td>
                                         <div class="qty">
                                             <button class="btn-minus"><i class="fa fa-minus"></i></button>
@@ -35,7 +35,7 @@
                                             <button class="btn-plus"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </td>
-                                    <td id="TotalPrice">$@item.TotalPrice</td>
+                                    <td><button class="btn-addToCart">Add to Cart</button></td>
                                     <td><button class="btn-remove"><i class="fa fa-trash"></i></button></td>
                                 </tr>
                             }
@@ -44,31 +44,9 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="coupon">
-                    <input type="text" placeholder="Coupon Code">
-                    <button>Apply Code</button>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="cart-summary">
-                    <div class="cart-content">
-                        <h3>Cart Summary</h3>
-                        <p>Sub Total<span>$22</span></p>
-                        <p>Shipping Cost<span>$1</span></p>
-                        <h4 id="GrandTotal">Grand Total<span>$@Model.Sum(x => x.TotalPrice).ToString()</span></h4>
-                    </div>
-                    <div class="cart-btn">
-                        <button class="btn-updateCart">Update Cart</button>
-                        <button>Checkout</button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
-<!-- Cart End -->
+<!-- Wishlist End -->
 @section Scripts
 {
     <script>
@@ -76,12 +54,11 @@
             const minusButtons = document.querySelectorAll(".btn-minus");
             const plusButtons = document.querySelectorAll(".btn-plus");
             const removeButtons = document.querySelectorAll(".btn-remove");
-            const updateCartButtons = document.querySelectorAll(".btn-updateCart");
+            const addToCartButtons = document.querySelectorAll(".btn-addToCart");
 
-            updateCartButtons.forEach(btn => {
+            addToCartButtons.forEach(btn => {
                 btn.addEventListener("click", function () {
-                    // Redirect to index page Product
-                    window.location.href = '@Url.Action("Index", "Product")';
+                    updateBtnClick(btn);
                 });
             });
 
@@ -115,40 +92,51 @@
                     console.log('Clicked the Add button');
 
                     // Send Ajax request
-                    sendData('AddCart', productId)
-
-
+                    sendData('AddWishList', productId);
                 }
                 // Check if btn has class .btn-minus
                 else if (btn.classList.contains('btn-minus')) {
                     console.log('Clicked the Minus button');
 
                     // Send Ajax request
-                    sendData('ReduceCart', productId)
-
+                    sendData('ReduceWishList', productId);
                 }
                 // Check if btn has class .btn-remove
                 else if (btn.classList.contains('btn-remove')) {
                     console.log('Clicked the Remove button');
 
                     // Send Ajax request
-                    sendData('RemoveCart', productId)
+                    sendData('RemoveWishList', productId);
+
+                    // Redirect to index page after success
+                    window.location.href = '@Url.Action("Index", "WishList")';
+                }
+                // Check if btn has class .btn-addToCart
+                else if (btn.classList.contains('btn-addToCart')) {
+                    console.log('Clicked the addToCart button');
+
+                    //Get quantity
+                    var inputElement = document.getElementById('quantityInput');
+                    var quantity = parseInt(inputElement.value);
+                    console.log('Clicked the addToCart button ' + quantity);
+
+                    // Send Ajax request
+                    sendData('AddCart', productId, quantity, 'Cart');
+
+                    // Redirect to index page after success
+                    window.location.href = '@Url.Action("Index", "Cart")';
                 }
             }
 
-            function sendData(action, productId) {
+            function sendData(action, productId, quantity = null, controller = 'WishList') {
                 // Send Ajax request for update
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST', `/Cart/${action}`, true);
+                xhr.open('POST', `/${controller}/${action}`, true);
                 xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
-
                         // Process results from the server (if necessary)
                         console.log('Data updated successfully!');
-
-                        // Redirect to index page after success
-                        window.location.href = '@Url.Action("Index", "Cart")';
                     }
                 };
                 xhr.send(JSON.stringify({ Id: productId, Quantity: 1 }));

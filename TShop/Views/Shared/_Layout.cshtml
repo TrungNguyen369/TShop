@@ -32,7 +32,7 @@
             <div class="row align-items-center">
                 <div class="col-md-3">
                     <div class="logo">
-                        <a href="">
+                        <a asp-action="Index" asp-controller="Home">
                             <img src="~/img/logo.png" alt="Logo">
                         </a>
                     </div>
@@ -54,10 +54,7 @@
                                 <a href="#" class="dropdown-item">Register</a>
                             </div>
                         </div>
-                        <div class="cart">
-                            <i class="fa fa-cart-plus"></i>
-                            <span>(0)</span>
-                        </div>
+                        @await Component.InvokeAsync("Cart")
                     </div>
                 </div>
             </div>
@@ -83,7 +80,7 @@
                                 <a asp-controller="Product" asp-action="Index" class="dropdown-item">Product</a>
                                 <a asp-controller="Product" asp-action="ProductDetail" asp-route-id="1" class="dropdown-item">Product Detail</a>
                                 <a asp-controller="Cart" asp-action="Index" class="dropdown-item">Cart</a>
-                                <a href="wishlist.html" class="dropdown-item">Wishlist</a>
+                                <a asp-action="Index" asp-controller="Index" class="dropdown-item">Wishlist</a>
                                 <a href="checkout.html" class="dropdown-item">Checkout</a>
                                 <a href="login.html" class="dropdown-item">Login & Register</a>
                                 <a href="my-account.html" class="dropdown-item">My Account</a>
@@ -135,7 +132,7 @@
                             <li><a href="checkout.html">Checkout</a></li>
                             <li><a href="login.html">Login & Register</a></li>
                             <li><a href="my-account.html">My Account</a></li>
-                            <li><a href="wishlist.html">Wishlist</a></li>
+                            <li><a asp-action="Index" asp-controller="WishList">Wishlist</a></li>
                         </ul>
                     </div>
                 </div>
