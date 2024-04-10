@@ -11,6 +11,8 @@ namespace TShop.Helpers
         {
             CreateMap<ProductVM, Product>();
             CreateMap<Product, ProductVM>();
+            CreateMap<UserVM, Customer>();
+            CreateMap<Customer, UserVM>();
         }
     }
 }

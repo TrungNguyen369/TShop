@@ -3,6 +3,7 @@ using TShop.IServices;
 using TShop.Services;
 using TShop.Models;
 using TShop.Helpers;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,7 @@ builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IBrandService, BrandService>();
 builder.Services.AddTransient<ICartService, CartService>();
 builder.Services.AddTransient<IWishListService, WishListService>();
+builder.Services.AddTransient<IUserService, UserService>();
 
 //Configure session state
 builder.Services.AddDistributedMemoryCache();
@@ -31,6 +33,13 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(10);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+});
+
+// https://learn.microsoft.com/en-us/aspnet/core/security/authentication/cookie?view=aspnetcore-8.0
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+{
+    options.LoginPath = "/User/Login";
+    options.AccessDeniedPath = "/AccessDenied";
 });
 
 var app = builder.Build();
