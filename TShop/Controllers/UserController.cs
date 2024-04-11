@@ -1,5 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using TShop.Contants;
 using TShop.IServices;
 using TShop.Models;
 using TShop.Services;
@@ -34,18 +39,46 @@ namespace TShop.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult Login(LoginVM loginVM)
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginVM loginVM)
         {
             if (ModelState.IsValid)
-            {             
-                var userVM = _userService.UserLogin(loginVM);
+            {
+                var userVM = await _userService.UserLoginAsync(loginVM);
                 if (userVM != null)
                 {
-                    return RedirectToAction("Index", "Product");
+                    var claims = new List<Claim> {
+                                new Claim(ClaimTypes.Email, userVM.Email),
+                                new Claim(ClaimTypes.Name, userVM.Name),
+                                
+                                //Role
+                                new Claim(ClaimTypes.Role, Constants.CLAIM_CUSTOMER)
+                            };
+
+                    var claimsIndentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var claimsPrincical = new ClaimsPrincipal(claimsIndentity);
+
+                    await HttpContext.SignInAsync(claimsPrincical);
+
+                    return RedirectToAction("AccountProfile");
                 }
             }
 
             return RedirectToAction("Index");
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+
+            return RedirectToAction("Index");
+        }
+
+        [Authorize]
+        public IActionResult AccountProfile()
+        {
+            return View();
         }
     }
 }

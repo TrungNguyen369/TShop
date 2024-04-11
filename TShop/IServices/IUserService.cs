@@ -7,6 +7,6 @@ namespace TShop.IServices
     public interface IUserService
     {
         Customer UserRegister(UserVM userVM, bool gender);
-        UserVM UserLogin(LoginVM loginVM);
+        Task<UserVM> UserLoginAsync(LoginVM loginVM);
     }
 }

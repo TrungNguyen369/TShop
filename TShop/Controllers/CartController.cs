@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System.Reflection.Metadata;
@@ -89,6 +90,13 @@ namespace TShop.Controllers
             HttpContext.Session.Set(Constants.CART_KEY, cartItems);
 
             return RedirectToAction("Index");
+        }
+
+        [Authorize]
+        public IActionResult CheckOut()
+        {
+
+            return View();
         }
     }
 }

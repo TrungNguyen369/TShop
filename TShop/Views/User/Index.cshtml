@@ -17,11 +17,11 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="login-form">
-                    <form asp-action="Login" asp-controller="User" enctype="multipart/form-data">
+                    <form asp-action="Login" asp-controller="User" enctype="multipart/form-data" asp-route-returnurl="@ViewBag.ReturnUrl">
                         <div class="row">
                             <div class="col-md-6">
-                                <label>E-mail / Username</label>
-                                <input asp-for="LoginVM.UserName" class="form-control" type="text" placeholder="User Name">
+                                <label>E-mail</label>
+                                <input asp-for="LoginVM.UserName" class="form-control" type="text" placeholder="E-mail">
                             </div>
                             <div class="col-md-6">
                                 <label>Password</label>
@@ -46,8 +46,8 @@
                     <form asp-action="RegisterUser" asp-controller="User" enctype="multipart/form-data">
                         <div class="row">
                             <div class="col-md-6">
-                                <label>User Name</label>
-                                <input asp-for="UserVM.Name" class="form-control" type="text" placeholder="User Name">
+                                <label>Full Name</label>
+                                <input asp-for="UserVM.Name" class="form-control" type="text" placeholder="Full Name">
                             </div>
                             <div class="col-md-6">
                                 <label>PassWork</label>
@@ -98,11 +98,10 @@
 
             if (passwordInput.type === "password") {
                 passwordInput.type = "text";
-                eyeIcon.className = "fa fa-eye-slash"; // Thay đổi biểu tượng khi hiển thị mật khẩu
+                eyeIcon.className = "fa fa-eye-slash"; // Change icon when displaying password
             } else {
                 passwordInput.type = "password";
-                eyeIcon.className = "fa fa-eye"; // Thay đổi biểu tượng khi ẩn mật khẩu
-            }
+                eyeIcon.className = "fa fa-eye"; // Change icon when hiding password
         }
     </script>
 }

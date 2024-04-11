@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
-using System.Reflection.Metadata;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using TShop.Contants;
 using TShop.Helpers;
@@ -23,12 +21,12 @@ namespace TShop.Services
             _context = context;
         }
 
-        public UserVM UserLogin(LoginVM loginVM)
+        public async Task<UserVM> UserLoginAsync(LoginVM loginVM)
         {
             UserVM userVM = null;
             try
             {
-                var user = _context.Customers.FirstOrDefault(x => x.FullName == loginVM.UserName || x.Email == loginVM.UserName);
+                var user = _context.Customers.FirstOrDefault(x => x.Email == loginVM.UserName);
 
                 if (user == null)
                 {
@@ -47,14 +45,6 @@ namespace TShop.Services
                     Console.WriteLine("Wrong login information");
                     return userVM;
                 }
-
-                var claims = new List<Claim> {
-                                new Claim(ClaimTypes.Email, user.Email),
-                                new Claim(ClaimTypes.Name, user.FullName),
-                                
-                                //Role
-                                new Claim(ClaimTypes.Role, Constants.CLAIM_CUSTOMER)
-                            };
 
                 userVM = _mapper.Map<UserVM>(user);
                 userVM.Name = user.FullName;
