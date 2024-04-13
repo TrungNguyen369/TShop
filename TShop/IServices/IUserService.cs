@@ -8,5 +8,7 @@ namespace TShop.IServices
     {
         Customer UserRegister(UserVM userVM, bool gender);
         Task<UserVM> UserLoginAsync(LoginVM loginVM);
+        UserVM UserPasswordChange(PasswordVM passwordVM, string emailUser);
+        Customer GetUserByEmail(string email);
     }
 }

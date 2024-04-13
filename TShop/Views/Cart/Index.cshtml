@@ -25,8 +25,8 @@
                             @foreach (var item in Model)
                             {
                                 <tr>
-                                    <td><a asp-action="ProductDetail" asp-controller="Product" asp-route-id="@item.Id"><img src="~/image/@item.image" alt="Image @item.image"></a></td>
-                                    <td><a data-product-id="@item.Id">@item.Name</a></td>
+                                    <td><a asp-action="ProductDetail" asp-controller="Product" asp-route-id="@item.IdProduct"><img src="~/image/@item.image" alt="Image @item.image"></a></td>
+                                    <td><a data-product-id="@item.IdProduct">@item.Name</a></td>
                                     <td id="Price">$@item.Price</td>
                                     <td>
                                         <div class="qty">
@@ -55,13 +55,11 @@
                 <div class="cart-summary">
                     <div class="cart-content">
                         <h3>Cart Summary</h3>
-                        <p>Sub Total<span>$22</span></p>
-                        <p>Shipping Cost<span>$1</span></p>
                         <h4 id="GrandTotal">Grand Total<span>$@Model.Sum(x => x.TotalPrice).ToString()</span></h4>
                     </div>
                     <div class="cart-btn">
-                        <button class="btn-updateCart">Update Cart</button>
-                        <button>Checkout</button>
+                        <button class="btn-updatecart">Update Cart</button>
+                        <button class="btn-getcheckout">Checkout</button>
                     </div>
                 </div>
             </div>
@@ -76,11 +74,19 @@
             const minusButtons = document.querySelectorAll(".btn-minus");
             const plusButtons = document.querySelectorAll(".btn-plus");
             const removeButtons = document.querySelectorAll(".btn-remove");
-            const updateCartButtons = document.querySelectorAll(".btn-updateCart");
+            const updateCartButtons = document.querySelectorAll(".btn-updatecart");
+            const checkOutButtons = document.querySelectorAll(".btn-getcheckout");
+
+            checkOutButtons.forEach(btn => {
+                btn.addEventListener("click", function () {
+                    console.log('Clicked the checkout button');
+                    window.location.href = '/Cart/CheckOut';
+                });
+            });
 
             updateCartButtons.forEach(btn => {
                 btn.addEventListener("click", function () {
-                    // Redirect to index page Product
+                    console.log('Clicked the updatecart button');
                     window.location.href = '@Url.Action("Index", "Product")';
                 });
             });
@@ -113,11 +119,8 @@
                 // Check if btn has class .btn-plus
                 if (btn.classList.contains('btn-plus')) {
                     console.log('Clicked the Add button');
-
                     // Send Ajax request
                     sendData('AddCart', productId)
-
-
                 }
                 // Check if btn has class .btn-minus
                 else if (btn.classList.contains('btn-minus')) {
@@ -125,7 +128,6 @@
 
                     // Send Ajax request
                     sendData('ReduceCart', productId)
-
                 }
                 // Check if btn has class .btn-remove
                 else if (btn.classList.contains('btn-remove')) {

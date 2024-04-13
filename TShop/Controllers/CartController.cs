@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Reflection.Metadata;
 using TShop.Contants;
 using TShop.Helpers;
 using TShop.IServices;
@@ -14,10 +14,14 @@ namespace TShop.Controllers
     public class CartController : Controller
     {
         private readonly ICartService _cartService;
+        private readonly PaypalClient _paypalClient;
+        private readonly IUserService _userService;
 
-        public CartController(ICartService cartService)
+        public CartController(ICartService cartService, PaypalClient paypalClient, IUserService userService)
         {
             _cartService = cartService;
+            _paypalClient = paypalClient;
+            _userService = userService;
         }
 
         public List<CartItem> Cart => HttpContext.Session.Get<List<CartItem>>(Constants.CART_KEY) ?? new List<CartItem>();
@@ -37,7 +41,7 @@ namespace TShop.Controllers
             //save cart
             HttpContext.Session.Set(Constants.CART_KEY, cartItems);
 
-            return RedirectToAction("Index");
+            return RedirectToAction(Constants.INDEX);
         }
 
         [HttpPost]
@@ -55,7 +59,7 @@ namespace TShop.Controllers
             //save cart
             HttpContext.Session.Set(Constants.CART_KEY, cartItems);
 
-            return RedirectToAction("Index");
+            return RedirectToAction(Constants.INDEX);
         }
 
         [HttpPost]
@@ -67,13 +71,13 @@ namespace TShop.Controllers
             var quantity = data.Quantity;
             var id = data.Id;
 
-            //add cart item into cart 
+            //Add cart item into cart 
             cartItems = _cartService.ReduceQuantityProduct(cartItems, id, quantity);
 
-            //save cart
+            //Save Session cart
             HttpContext.Session.Set(Constants.CART_KEY, cartItems);
 
-            return RedirectToAction("Index");
+            return RedirectToAction(Constants.INDEX);
         }
 
         [HttpPost]
@@ -83,20 +87,148 @@ namespace TShop.Controllers
 
             var id = data.Id;
 
-            //add cart item into cart 
+            //Add cart item into cart 
             cartItems = _cartService.RevomeProductToCart(cartItems, id);
 
-            //save cart
+            //Save Session cart
             HttpContext.Session.Set(Constants.CART_KEY, cartItems);
 
-            return RedirectToAction("Index");
+            return RedirectToAction(Constants.INDEX);
         }
 
         [Authorize]
+        [HttpGet]
         public IActionResult CheckOut()
         {
+            if (Cart.Count() == 0)
+            {
+                return Redirect("/");
+            }
 
-            return View();
+            var email = HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains(Constants.EMAILADDRESS)).Value;
+            if (email == null)
+            {
+                return Redirect("/");
+            }
+
+            var user = _userService.GetUserByEmail(email);
+            if (user == null)
+            {
+                return Redirect("/");
+            }
+
+            var checkOutVM = new CheckOutVM
+            {
+                cartItems = Cart,
+                IdUser = user.IdCustomer,
+                Email = email,
+                Phone = user.Phone,
+                Address = user.Address,
+                UserName = user.FullName,
+            };
+
+            HttpContext.Session.Set(Constants.CHECKOUT_KEY, checkOutVM);
+
+            ViewBag.PayPalClientId = _paypalClient.ClientId;
+
+            return View(checkOutVM);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult CheckOut(CheckOutVM checkOutVM, string? payment)
+        {
+            var result = _cartService.CheckOut(checkOutVM, payment, Cart);
+
+            if (result == Constants.SUCCESS)
+            {
+                var cartItems = new List<CartItem>();
+                HttpContext.Session.Set(Constants.CART_KEY, cartItems);
+            }
+
+            return View(result);
+        }
+
+        [Authorize]
+        public IActionResult PaymentSuccess()
+        {
+            return View(Constants.SUCCESS);
+        }
+
+        #region PaypalClient
+        [Authorize]
+        [HttpPost("/Cart/create-paypal-order")]
+        public async Task<IActionResult> CreatePaypalOrder(CancellationToken cancellationToken)
+        {
+            //Thông tin đơn hàng gửi qua Paypal
+            var grandTotal = Cart.Sum(x => x.TotalPrice).ToString();
+            var currencyUnit = Constants.CURRENCY_USD;
+            var ReferenceOrderCode = Constants.ORDER_CODE + DateTime.Now.Ticks.ToString();
+
+            try
+            {
+                var response = await _paypalClient.CreateOrder(grandTotal, currencyUnit, ReferenceOrderCode);
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                var error = new { ex.GetBaseException().Message };
+                return BadRequest(error);
+            }
+        }
+
+        [Authorize]
+        [HttpPost("Cart/capture-paypal-order")]
+        public async Task<IActionResult> CapturePaypalOrder(string orderID, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var response = await _paypalClient.CaptureOrder(orderID);
+
+                //Save database
+                var value = HttpContext.Session.Get<CheckOutVM>(Constants.CHECKOUT_KEY);
+
+                var result = _cartService.CheckOut(value, Constants.PAYPAL, Cart);
+
+                if (result == Constants.SUCCESS)
+                {
+                    var cartItems = new List<CartItem>();
+                    HttpContext.Session.Set(Constants.CART_KEY, cartItems);
+                }
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                var error = new { ex.GetBaseException().Message };
+                return BadRequest(error);
+            }
+        }
+        #endregion
+
+        [Authorize]
+        public IActionResult PaymentFail()
+        {
+            return View(Constants.FAIL);
+        }
+
+        [Authorize]
+        public IActionResult PaymentCallBack()
+        {
+            //var response = _vnPayService.PaymentExecute(Request.Query);
+
+            //if (response == null || response.VnPayResponseCode != "00")
+            //{
+            //    TempData["Message"] = $"Lỗi thanh toán VN PAY: {response.VnPayResponseCode}";
+            //    return Redirect("PaymentFail");
+            //}
+
+            //// Lưu đơn hàng vào database
+
+
+            //TempData["Message"] = $"Thanh toán VN PAY thành công: {response.VnPayResponseCode}";
+            return Redirect(Constants.SUCCESS);
         }
     }
 }

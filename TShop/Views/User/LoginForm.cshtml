@@ -1,0 +1,27 @@
+﻿@model TShop.ViewModels.SharedViewModel
+
+<div class="col-md-6">
+    <div class="login-form">
+        <form asp-action="Login" asp-controller="User" enctype="multipart/form-data" asp-route-returnurl="@ViewBag.ReturnUrl">
+            <div class="row">
+                <div class="col-md-6">
+                    <label>E-mail</label>
+                    <input asp-for="LoginVM.UserName" class="form-control" type="text" placeholder="E-mail">
+                </div>
+                <div class="col-md-6">
+                    <label>Password</label>
+                    <input asp-for="LoginVM.Password" class="form-control" type="text" placeholder="Passwork">
+                </div>
+                <div class="col-md-12">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="newaccount">
+                        <label class="custom-control-label" for="newaccount">Keep me signed in</label>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <button type="submit" class="btn">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

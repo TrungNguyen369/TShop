@@ -8,5 +8,6 @@ namespace TShop.IServices
         List<CartItem> AddProductToCart(List<CartItem> cartItems, int idProduct, int quantity);
         List<CartItem> RevomeProductToCart(List<CartItem> cartItems, int idProduct);
         List<CartItem> ReduceQuantityProduct(List<CartItem> cartItems, int idProduct, int quantity);
+        string CheckOut(CheckOutVM checkOutVM, string? payment, List<CartItem> cartItems);
     }
 }

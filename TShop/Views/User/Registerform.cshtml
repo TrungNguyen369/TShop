@@ -1,0 +1,47 @@
+﻿@model TShop.ViewModels.SharedViewModel
+
+<div class="col-md-6">
+    <div class="register-form">
+        <form asp-action="RegisterUser" asp-controller="User" enctype="multipart/form-data" asp-route-returnUrl="@ViewBag.ReturnUrl">
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Full Name</label>
+                    <input asp-for="UserVM.Name" class="form-control" type="text" placeholder="Full Name">
+                </div>
+                <div class="col-md-6">
+                    <label>PassWork</label>
+                    <input asp-for="UserVM.Password" class="form-control" type="password" type="password" id="password" name="password" placeholder="Pass Work">
+                </div>
+                <div class="col-md-6">
+                    <label>E-mail</label>
+                    <input asp-for="UserVM.Email" class="form-control" type="text" placeholder="E-mail">
+                </div>
+                <div class="col-md-6">
+                    <label>Mobile No</label>
+                    <input asp-for="UserVM.Phone" class="form-control" type="text" placeholder="Mobile No">
+                </div>
+                <div class="col-md-6">
+                    <label>Address</label>
+                    <input asp-for="UserVM.Address" class="form-control" type="text" placeholder="123 road">
+                </div>
+                <div class="col-md-6">
+                    <label>Birth Day</label>
+                    <input asp-for="UserVM.BirthDay" class="form-control" type="date">
+                </div>
+                <div class="col-md-6 d-flex justify-content-center align-items-center">
+                    <div class="col-md-6">
+                        <input type="radio" id="maleRadio" name="gender" value="true">
+                        <label for="maleRadio">Male</label>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="radio" id="femaleRadio" name="gender" value="false">
+                        <label for="femaleRadio">Female</label>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <button type="submit" class="btn">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

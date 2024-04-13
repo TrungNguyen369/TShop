@@ -1,0 +1,43 @@
+﻿@model TShop.ViewModels.SharedViewModel
+
+<div class="tab-pane fade" id="account-tab" role="tabpanel" aria-labelledby="account-nav">
+    <h4>Account Details</h4>
+    <div class="row">
+        <div class="col-md-6">
+            <input asp-for="UserVM.Name" type="text" placeholder="Full Name">
+        </div>
+        <div class="col-md-6">
+            <input asp-for="UserVM.BirthDay" type="date" placeholder="BirthDay">
+        </div>
+        <div class="col-md-6">
+            <input asp-for="UserVM.Phone" type="text" placeholder="Mobile">
+        </div>
+        <div class="col-md-6">
+            <input asp-for="UserVM.Email" type="text" placeholder="Email">
+        </div>
+        <div class="col-md-12">
+            <input asp-for="UserVM.Address" type="text" placeholder="Address">
+        </div>
+        <div class="col-md-12">
+            <button type="submit">Update Account</button>
+            <br><br>
+        </div>
+    </div>
+    <h4>Password change</h4>
+    <form asp-action="PasswordChange" asp-controller="User" method="post" asp-route-emailUser="@Model.UserVM.Email" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-12">
+                <input asp-for="PasswordVM.CurrentPassword" type="password" placeholder="Current Password">
+            </div>
+            <div class="col-md-6">
+                <input asp-for="PasswordVM.NewPassword" type="text" placeholder="New Password">
+            </div>
+            <div class="col-md-6">
+                <input asp-for="PasswordVM.ConfirmPassword" type="text" placeholder="Confirm Password">
+            </div>
+            <div class="col-md-12">
+                <button type="submit">Save Changes</button>
+            </div>
+        </div>
+    </form>
+</div>

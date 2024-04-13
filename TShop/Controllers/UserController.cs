@@ -34,9 +34,16 @@ namespace TShop.Controllers
             {
                 _userService.UserRegister(userVM, gender);
 
-                return RedirectToAction("Index", "Product");
+                return RedirectToAction(Constants.INDEX, Constants.PRODUCT);
             }
-            return RedirectToAction("Index");
+            return RedirectToAction(Constants.INDEX);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Login(string? returnUrl)
+        {
+            ViewBag.ReturnUrl = returnUrl;
+            return RedirectToAction(Constants.INDEX);
         }
 
         [HttpPost]
@@ -60,11 +67,16 @@ namespace TShop.Controllers
 
                     await HttpContext.SignInAsync(claimsPrincical);
 
-                    return RedirectToAction("AccountProfile");
+                    var shareModel = new SharedViewModel
+                    {
+                        UserVM = userVM,
+                    };
+
+                    return RedirectToAction(Constants.ACCOUNTPROFILE, shareModel);
                 }
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction(Constants.INDEX);
         }
 
         [Authorize]
@@ -72,13 +84,36 @@ namespace TShop.Controllers
         {
             await HttpContext.SignOutAsync();
 
-            return RedirectToAction("Index");
+            return RedirectToAction(Constants.INDEX);
         }
 
         [Authorize]
-        public IActionResult AccountProfile()
+        public IActionResult AccountProfile(SharedViewModel shareModel)
         {
-            return View();
+            return View(shareModel);
+        }
+
+        [Authorize]
+        public IActionResult PasswordChange(PasswordVM passwordVM, string emailUser)
+        {
+            if (emailUser == null)
+            {
+                return RedirectToAction(Constants.ACCOUNTPROFILE);
+            }
+
+            if (!passwordVM.NewPassword.Equals("") || passwordVM.NewPassword != passwordVM.ConfirmPassword || passwordVM.CurrentPassword == passwordVM.NewPassword)
+            {
+                return RedirectToAction(Constants.ACCOUNTPROFILE);
+            }
+
+            var user = _userService.UserPasswordChange(passwordVM, emailUser);
+
+            var shareModel = new SharedViewModel
+            {
+                UserVM = user
+            };
+
+            return RedirectToAction(Constants.ACCOUNTPROFILE, shareModel);
         }
     }
 }

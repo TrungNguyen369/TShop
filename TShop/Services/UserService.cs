@@ -21,6 +21,15 @@ namespace TShop.Services
             _context = context;
         }
 
+        public Customer GetUserByEmail(string email)
+        {
+            Customer user = null;
+
+            user = _context.Customers.FirstOrDefault(x => x.Email == email);
+
+            return user;
+        }
+
         public async Task<UserVM> UserLoginAsync(LoginVM loginVM)
         {
             UserVM userVM = null;
@@ -48,6 +57,37 @@ namespace TShop.Services
 
                 userVM = _mapper.Map<UserVM>(user);
                 userVM.Name = user.FullName;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ex.Message}");
+            }
+
+            return userVM;
+        }
+
+        public UserVM UserPasswordChange(PasswordVM passwordVM, string emailUser)
+        {
+            UserVM userVM = null;
+
+            try
+            {
+                var user = _context.Customers.FirstOrDefault(x => x.Email == emailUser);
+
+                if (user == null)
+                {
+                    Console.WriteLine("Not found UserName or Email");
+
+                    return userVM;
+                }
+
+                if (user.PassWord == passwordVM.CurrentPassword.ToMd5Hash(user.RandomKey))
+                {
+                    user.PassWord = passwordVM.NewPassword.ToMd5Hash(user.RandomKey);
+
+                    userVM = _mapper.Map<UserVM>(user);
+                    userVM.Name = user.FullName;
+                }
             }
             catch (Exception ex)
             {

@@ -33,7 +33,7 @@ namespace TShop.Controllers
             //save cart
             HttpContext.Session.Set(Constants.CART_KEY, wishListItems);
 
-            return RedirectToAction("Index");
+            return RedirectToAction(Constants.INDEX);
         }
 
         [HttpPost]
