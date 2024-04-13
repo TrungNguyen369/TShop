@@ -41,14 +41,17 @@
                             {
                                 <p>@item.Name<span class="ml-auto">$@item.TotalPrice</span></p>
                             }
-                            <h4 class="mt-4">Grand Total<span>$@Model.GrandTotal</span></h4>
+                            <h4 class="mt-4" asp-for="@Model.GrandTotal">Grand Total<span>$@Model.GrandTotal</span></h4>
                         </div>
                     </div>
 
                     <div class="checkout-payment">
                         <h2>Payment Methods</h2>
                         <div class="checkout-btn">
-                            <button style="width:100%">Place Order</button>
+                            <input type="submit" name="payment" value="Place Order" style="width:100%" />
+                        </div>
+                        <div class="checkout-btn">
+                            <input type="submit" name="payment" value="VNPay" style="width:100%" />
                         </div>
                         <div class="checkout-btn mt-4">
                             <div id="paypal-button-container" style="width:100%"></div>

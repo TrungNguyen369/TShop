@@ -24,6 +24,7 @@ builder.Services.AddTransient<IBrandService, BrandService>();
 builder.Services.AddTransient<ICartService, CartService>();
 builder.Services.AddTransient<IWishListService, WishListService>();
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IVnPayService, VnPayService>();
 
 //Configure session state
 builder.Services.AddDistributedMemoryCache();

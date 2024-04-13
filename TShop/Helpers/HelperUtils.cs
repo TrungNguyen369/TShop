@@ -2,7 +2,7 @@
 
 namespace TShop.Helpers
 {
-    public class Utils
+    public class HelperUtils
     {
         public static string GenerateRamdomKey(int length = 5)
         {

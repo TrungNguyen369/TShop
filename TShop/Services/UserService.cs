@@ -104,7 +104,7 @@ namespace TShop.Services
             {
                 user.FullName = userVM.Name;
                 user.Sex = gender;
-                user.RandomKey = Utils.GenerateRamdomKey();
+                user.RandomKey = HelperUtils.GenerateRamdomKey();
                 user.PassWord = userVM.Password.ToMd5Hash(user.RandomKey);
                 user.Effect = true;
 

@@ -16,12 +16,14 @@ namespace TShop.Controllers
         private readonly ICartService _cartService;
         private readonly PaypalClient _paypalClient;
         private readonly IUserService _userService;
+        private readonly IVnPayService _vnPayService;
 
-        public CartController(ICartService cartService, PaypalClient paypalClient, IUserService userService)
+        public CartController(ICartService cartService, PaypalClient paypalClient, IUserService userService, IVnPayService vnPayService)
         {
             _cartService = cartService;
             _paypalClient = paypalClient;
             _userService = userService;
+            _vnPayService = vnPayService;
         }
 
         public List<CartItem> Cart => HttpContext.Session.Get<List<CartItem>>(Constants.CART_KEY) ?? new List<CartItem>();
@@ -136,8 +138,23 @@ namespace TShop.Controllers
 
         [Authorize]
         [HttpPost]
-        public IActionResult CheckOut(CheckOutVM checkOutVM, string? payment)
+        public IActionResult CheckOut(string? payment)
         {
+            var checkOutVM = HttpContext.Session.Get<CheckOutVM>(Constants.CHECKOUT_KEY);
+
+            if (payment == Constants.VNPAY)
+            {
+                var vnPayModel = new VnPaymentRequestModel
+                {
+                    Amount = checkOutVM.GrandTotal,
+                    CreatedDate = DateTime.Now,
+                    Description = $"{checkOutVM.Address} {checkOutVM.Phone}",
+                    FullName = checkOutVM.UserName,
+                    OrderId = new Random().Next(1000, 10000)
+                };
+                return Redirect(_vnPayService.CreatePaymentUrl(HttpContext, vnPayModel));
+            }
+
             var result = _cartService.CheckOut(checkOutVM, payment, Cart);
 
             if (result == Constants.SUCCESS)
@@ -160,7 +177,7 @@ namespace TShop.Controllers
         [HttpPost("/Cart/create-paypal-order")]
         public async Task<IActionResult> CreatePaypalOrder(CancellationToken cancellationToken)
         {
-            //Thông tin đơn hàng gửi qua Paypal
+            //Order information sent via Paypal
             var grandTotal = Cart.Sum(x => x.TotalPrice).ToString();
             var currencyUnit = Constants.CURRENCY_USD;
             var ReferenceOrderCode = Constants.ORDER_CODE + DateTime.Now.Ticks.ToString();
@@ -208,27 +225,27 @@ namespace TShop.Controllers
         #endregion
 
         [Authorize]
-        public IActionResult PaymentFail()
-        {
-            return View(Constants.FAIL);
-        }
-
-        [Authorize]
         public IActionResult PaymentCallBack()
         {
-            //var response = _vnPayService.PaymentExecute(Request.Query);
+            var response = _vnPayService.PaymentExecute(Request.Query);
 
-            //if (response == null || response.VnPayResponseCode != "00")
-            //{
-            //    TempData["Message"] = $"Lỗi thanh toán VN PAY: {response.VnPayResponseCode}";
-            //    return Redirect("PaymentFail");
-            //}
+            if (response == null || response.VnPayResponseCode != Constants.VNPAY_RESPRONSE_CODE)
+            {
+                return View(Constants.FAIL);
+            }
 
-            //// Lưu đơn hàng vào database
+            //Save database
+            var value = HttpContext.Session.Get<CheckOutVM>(Constants.CHECKOUT_KEY);
 
+            var result = _cartService.CheckOut(value, Constants.VNPAY, Cart);
 
-            //TempData["Message"] = $"Thanh toán VN PAY thành công: {response.VnPayResponseCode}";
-            return Redirect(Constants.SUCCESS);
+            if (result == Constants.SUCCESS)
+            {
+                var cartItems = new List<CartItem>();
+                HttpContext.Session.Set(Constants.CART_KEY, cartItems);
+            }
+
+            return View(Constants.SUCCESS);
         }
     }
 }

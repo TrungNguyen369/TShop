@@ -11,6 +11,7 @@
         public static string ORDER_CODE = "HD";
         public static string PRODUCT = "Product";
         public static string ACCOUNTPROFILE = "AccountProfile";
+        public static string VNPAY_RESPRONSE_CODE = "00";
 
         //Currency unit
         public static string CURRENCY_USD = "CheckOutVM";
