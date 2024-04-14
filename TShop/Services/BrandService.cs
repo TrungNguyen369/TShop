@@ -12,6 +12,10 @@ namespace TShop.Services
             _context = context;
         }
 
+        /// <summary>
+        /// Get all brand
+        /// </summary>
+        /// <returns>list brand</returns>
         public List<Brand> GetAllBrand()
         {
             return _context.Brands.ToList(); ;

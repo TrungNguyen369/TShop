@@ -1,7 +1,8 @@
 ﻿using TShop.Helpers;
+using TShop.IServices;
 using TShop.ViewModels;
 
-namespace TShop.IServices
+namespace TShop.Services
 {
     public class VnPayService : IVnPayService
     {
@@ -26,7 +27,7 @@ namespace TShop.IServices
             //To send a payment amount of 100,000 VND (one hundred thousand VND),
             //the merchant needs to multiply it by 100 times (remove the decimal part),
             //then send to VNPAY: 10000000
-            vnpay.AddRequestData("vnp_Amount", (model.Amount).ToString());
+            vnpay.AddRequestData("vnp_Amount", model.Amount.ToString());
 
             vnpay.AddRequestData("vnp_CreateDate", model.CreatedDate.ToString("yyyyMMddHHmmss"));
             vnpay.AddRequestData("vnp_CurrCode", _configuration["VnPay:CurrCode"]);
@@ -40,7 +41,7 @@ namespace TShop.IServices
             // Reference code of the transaction in the merchant's system.
             // This code is unique to distinguish orders sent to VNPAY.
             // There should be no overlap in dates
-            vnpay.AddRequestData("vnp_TxnRef", tick); 
+            vnpay.AddRequestData("vnp_TxnRef", tick);
 
             var paymentUrl = vnpay.CreateRequestUrl(_configuration["VnPay:BaseUrl"], _configuration["VnPay:HashSecret"]);
 

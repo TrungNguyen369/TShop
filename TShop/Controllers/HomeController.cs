@@ -21,6 +21,10 @@ namespace TShop.Controllers
             _brands = brands;
         }
 
+        /// <summary>
+        /// This is the home page
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             //Get list new product and product hot

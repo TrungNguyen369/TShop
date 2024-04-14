@@ -16,13 +16,21 @@ namespace TShop.Services
             _context = context;
             _userService = userService;
         }
+
+        /// <summary>
+        /// Handle add product into carts
+        /// </summary>
+        /// <param name="cartItems"></param>
+        /// <param name="idProduct"></param>
+        /// <param name="quantity"></param>
+        /// <returns></returns>
         public List<CartItem> AddProductToCart(List<CartItem> cartItems, int idProduct, int quantity)
         {
-            //find item exsist cart?
+            //Find item exsist cart?
             var item = cartItems.Find(x => x.IdProduct == idProduct);
 
-            //new item add cart
-            //defaut add quantity in item in cart
+            //New item add cart
+            //Defaut add quantity in item in cart
             if (item == null)
             {
                 //get product item
@@ -38,28 +46,38 @@ namespace TShop.Services
                     image = product.Image
                 };
 
-                //add cart
+                //Add new item into cart
                 cartItems.Add(item);
             }
             else
             {
+                //Add quantity item ready in cart
                 item.Quantity += quantity;
             }
 
             return cartItems;
         }
 
+        /// <summary>
+        /// Handle checkout
+        /// </summary>
+        /// <param name="checkOutVM"></param>
+        /// <param name="payment"></param>
+        /// <param name="cartItems"></param>
+        /// <returns></returns>
         public string CheckOut(CheckOutVM checkOutVM, string? payment, List<CartItem> cartItems)
         {
+            //Define reslut return
             var result = Constants.FAIL;
 
+            //Get user by email and check user exist
             var user = _userService.GetUserByEmail(checkOutVM.Email);
-
             if (user == null)
             {
                 return result;
             }
 
+            //Create bill prepare in save datebase
             var bill = new Invoice
             {
                 OrderDate = DateTime.Now,
@@ -79,6 +97,7 @@ namespace TShop.Services
                 _context.Add(bill);
                 _context.SaveChanges();
 
+                //Data bill details save in DB
                 var billDetails = new List<InvoiceDetail>();
                 foreach (var item in cartItems)
                 {
@@ -111,12 +130,19 @@ namespace TShop.Services
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Decrease quantity item in cart
+        /// </summary>
+        /// <param name="cartItems"></param>
+        /// <param name="idProduct"></param>
+        /// <param name="quantity"></param>
+        /// <returns></returns>
         public List<CartItem> ReduceQuantityProduct(List<CartItem> cartItems, int idProduct, int quantity)
         {
-            //find item exsist cart?
+            //Find item exsist cart?
             var item = cartItems.Find(x => x.IdProduct == idProduct);
 
-            //check item reduce cart
+            //Check item reduce cart
             if (item != null)
             {
                 if (item.Quantity <= 1)
@@ -133,12 +159,18 @@ namespace TShop.Services
             return cartItems;
         }
 
+        /// <summary>
+        /// Delete item ready in cart
+        /// </summary>
+        /// <param name="cartItems"></param>
+        /// <param name="idProduct"></param>
+        /// <returns></returns>
         public List<CartItem> RevomeProductToCart(List<CartItem> cartItems, int idProduct)
         {
-            //find item exsist cart?
+            //Find item exsist cart?
             var item = cartItems.Find(x => x.IdProduct == idProduct);
 
-            //check item add cart
+            //Check item add cart
             if (item != null)
             {
                 //Revome cart

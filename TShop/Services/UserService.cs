@@ -5,7 +5,6 @@ using TShop.Contants;
 using TShop.Helpers;
 using TShop.IServices;
 using TShop.Models;
-using TShop.ViewComponents;
 using TShop.ViewModels;
 
 namespace TShop.Services

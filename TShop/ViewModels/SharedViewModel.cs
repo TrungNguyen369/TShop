@@ -1,6 +1,4 @@
-﻿using TShop.ViewComponents;
-
-namespace TShop.ViewModels
+﻿namespace TShop.ViewModels
 {
     public class SharedViewModel
     {

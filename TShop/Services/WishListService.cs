@@ -14,19 +14,26 @@ namespace TShop.Services
             _context = context; 
         }
 
+        /// <summary>
+        /// Handle add wishlist
+        /// </summary>
+        /// <param name="wishListItems"></param>
+        /// <param name="idProduct"></param>
+        /// <param name="quantity"></param>
+        /// <returns></returns>
         public List<WishItem> AddWishListItem(List<WishItem> wishListItems, int idProduct, int quantity)
         {
-            //find item exsist cart?
+            //Find item exsist cart?
             var item = wishListItems.Find(x => x.Id == idProduct);
 
-            //new item add cart
-            //defaut add quantity in item in cart
+            //New item add cart
+            //Defaut add quantity in item in cart
             if (item == null)
             {
-                //get product item
+                //Get product item
                 var product = _context.Products.FirstOrDefault(x => x.IdProduct == idProduct);
 
-                //define CartItem from product 
+                //Define CartItem from product 
                 item = new WishItem
                 {
                     Id = idProduct,
@@ -36,17 +43,25 @@ namespace TShop.Services
                     image = product.Image
                 };
 
-                //add cart
+                //Add item in wishlist
                 wishListItems.Add(item);
             }
             else
             {
+                //Add quantity item ready in wishlist
                 item.Quantity += quantity;
             }
 
             return wishListItems;
         }
 
+        /// <summary>
+        /// Decease quantity item ready in wishlist
+        /// </summary>
+        /// <param name="wishListItems"></param>
+        /// <param name="idProduct"></param>
+        /// <param name="quantity"></param>
+        /// <returns></returns>
         public List<WishItem> ReduceWishListItem(List<WishItem> wishListItems, int idProduct, int quantity)
         {
             //find item exsist cart?
@@ -61,7 +76,7 @@ namespace TShop.Services
                 }
                 else
                 {
-                    //Reduce cart
+                    //Reduce quantity item wishlist
                     item.Quantity -= quantity;
                 }
             }
@@ -69,6 +84,12 @@ namespace TShop.Services
             return wishListItems;
         }
 
+        /// <summary>
+        /// Hanlde delete item in wishlist
+        /// </summary>
+        /// <param name="wishListItems"></param>
+        /// <param name="idProduct"></param>
+        /// <returns></returns>
         public List<WishItem> RevomeWishListItem(List<WishItem> wishListItems, int idProduct)
         {
             //find item exsist cart?

@@ -19,6 +19,14 @@ namespace TShop.Controllers
             _productService = productService;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="categoryId"></param>
+        /// <param name="brandId"></param>
+        /// <param name="nameQuery"></param>
+        /// <returns></returns>
         public IActionResult Index(int? page, int? categoryId, int? brandId, string? nameQuery)
         {
             //Define size page
@@ -62,16 +70,26 @@ namespace TShop.Controllers
 
         public IActionResult ProductDetail(int id)
         {
-            //get product by id and relate products
+            //Get product by id and relate products
             var product = _productService.GetProductById(id);
+
+            //If the product is null, move page not found
+            if (product == null)
+            {
+                return Redirect("/404");
+            }
             var relateProducts = _productService.GetProductsByIdCategory(product.IdCategory);
 
-            //define tuple return data
+            //Define tuple return data
             (Product, List<Product>) tuple = (product, relateProducts);
 
             return View(tuple);
         }
 
+        /// <summary>
+        /// This is page not found
+        /// </summary>
+        /// <returns></returns>
         [Route("/404")]
         public IActionResult PageNotFound()
         {
